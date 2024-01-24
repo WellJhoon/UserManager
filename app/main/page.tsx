@@ -2,7 +2,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -12,10 +22,37 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UserButton } from "@clerk/nextjs";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@radix-ui/react-dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
 import { BellIcon, HomeIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Project } from "../../types/Project";
 
 const HomePage = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const getTableData = async () => {
+    try {
+      const response = await axios.get<Project[]>(
+        "http://localhost:4000/api/projects"
+      );
+      setProjects(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getTableData();
+  }, []);
+
   return (
     <>
       <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
@@ -81,9 +118,9 @@ const HomePage = () => {
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
             <div className="flex items-center">
               <h1 className="font-semibold text-lg md:text-2xl">Projects</h1>
-              <Button className="ml-auto" size="sm">
-                Add Project
-              </Button>
+              <div className="md:ml-auto w-full justify-between md:justify-end flex items-center gap-x-2 ">
+                <Button variant="outline">Add Project</Button>
+              </div>
             </div>
             <div className="border shadow-sm rounded-lg">
               <Table>
@@ -98,35 +135,55 @@ const HomePage = () => {
                       People Assigned a Project
                     </TableHead>
                     <TableHead>Creation date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">
-                      Colmadon Fefita
-                    </TableCell>
-                    <TableCell>Este colmado vende selbesa fria</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      oh yo xd
-                    </TableCell>
-                    <TableCell>Manuel Atiende al colmado</TableCell>
-                    <TableCell>21-2-2023</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">
-                      La comprabenta
-                    </TableCell>
-                    <TableCell>Aqui acetamo abanico robao</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      Si te digo me meten preso
-                    </TableCell>
-                    <TableCell>Un pana ahi</TableCell>
-                    <TableCell>21-2-2023</TableCell>
-                  </TableRow>
+                  {projects.map((project) => (
+                    <TableRow key={project.id}>
+                      <TableCell className="font-medium">
+                        {project.name}
+                      </TableCell>
+                      <TableCell>{project.description}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {project.owner}
+                      </TableCell>
+                      <TableCell>{project.members.join(", ")}</TableCell>
+                      <TableCell>{project.createdAt}</TableCell>
+                      <TableCell>
+                        <Button variant="outline">Edit</Button>
+                        <Button variant="outline">Delete</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </div>
           </main>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" isActive>
+                  2
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">3</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </div>
     </>
