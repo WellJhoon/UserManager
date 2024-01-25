@@ -40,13 +40,6 @@ export const EditComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newProject = {
-      name: name,
-      description: description,
-      owner: owner,
-      members: members,
-    };
-
     const updatedProject = {
       name: name,
       description: description,
@@ -54,7 +47,6 @@ export const EditComponent = () => {
       members: members,
     };
 
-    console.log(newProject);
     try {
       const response = await axios.put(
         `http://localhost:4000/api/projects/${edit.project?.id}`,
@@ -66,6 +58,7 @@ export const EditComponent = () => {
       console.error(e);
     }
   };
+
   return (
     <>
       <div className=" flex items-center justify-center bg-gray-50 pt-2 border-r-2 pb-2">

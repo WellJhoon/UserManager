@@ -21,16 +21,31 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { useEdit } from "@/utils/useEdit";
+import { Router, response } from "express";
+import { useRouter } from "next/navigation";
 
 const TableSection = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [deleteId, setDeleteId] = useState(null);
   const projectsPerPage = 5; // Número de proyectos por página
   const edit = useEdit();
-
+  const router = useRouter();
   const handleEditClick = (project: Project) => {
     edit.onOpen(project);
+  };
+  const handleDeleteClick = async (id) => {
+    setDeleteId(id);
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/projects/${id}`
+      );
+      getTableData();
+      console.log(response.data); // Maneja la respuesta según tus necesidades
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getTableData = async () => {
@@ -124,7 +139,14 @@ const TableSection = () => {
                   >
                     Edit
                   </Button>
-                  <Button variant="outline">Delete</Button>
+                  <Button
+                    onClick={() => {
+                      handleDeleteClick(project?.id);
+                    }}
+                    variant="outline"
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
