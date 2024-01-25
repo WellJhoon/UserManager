@@ -15,7 +15,7 @@ const LandingPage = () => {
           </div>
         )}
         {!isSignedIn && isLoaded && (
-          <SignInButton mode="redirect">
+          <SignInButton mode="modal">
             <div>Iniciar Sesion</div>
           </SignInButton>
         )}

@@ -16,7 +16,7 @@ const HomePage = () => {
   const edit = useEdit();
   return (
     <>
-      <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+      <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr] ">
         {/* sidebar */}
         <Sidebar />
         <div className="flex flex-col">

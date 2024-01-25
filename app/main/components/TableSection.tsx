@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -15,6 +16,20 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { Project } from "@/types/Project";
 import axios from "axios";
@@ -23,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { useEdit } from "@/utils/useEdit";
 import { Router, response } from "express";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const TableSection = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -132,7 +148,79 @@ const TableSection = () => {
                 </TableCell>
                 <TableCell>{project?.members?.length || 0}</TableCell>
                 <TableCell>{project.createdAt}</TableCell>
-                <TableCell>
+                <TableCell className="flex space-x-">
+                  {/*Aqui Va */}
+                  <div className="flex space-p-3">
+                    {currentProjects.map((project) => (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">View Data</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuLabel></DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <strong>Data</strong>
+                          </DropdownMenuItem>
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                              Name
+                              <DropdownMenuShortcut>
+                                {project.name}
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Description
+                              <DropdownMenuShortcut>
+                                {project.description}
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Owner
+                              <DropdownMenuShortcut>
+                                {project.owner}
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Creation Date
+                              <DropdownMenuShortcut>
+                                {project.createdAt}
+                              </DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                              <strong>Menbers</strong>
+                            </DropdownMenuItem>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger>
+                                Users In a project
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                  <DropdownMenuItem>
+                                    {project.members[0]}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    {project.members[1]}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem>More...</DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuItem>
+                              New Team
+                              <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuSeparator />
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ))}
+                  </div>
                   <Button
                     onClick={() => handleEditClick(project)}
                     variant="outline"
@@ -146,6 +234,9 @@ const TableSection = () => {
                     variant="outline"
                   >
                     Delete
+                  </Button>
+                  <Button onClick={() => {}} variant="outline">
+                    AddUsers
                   </Button>
                 </TableCell>
               </TableRow>

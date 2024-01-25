@@ -38,8 +38,6 @@ export const EditComponent = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
     const updatedProject = {
       name: name,
       description: description,
