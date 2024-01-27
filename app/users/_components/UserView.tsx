@@ -58,13 +58,7 @@ export const UserView = () => {
       <div className="flex items-center justify-center bg-gray-50 pt-2 border-r-2 pb-2">
         <div className="max-w-md w-full p-8 bg-white rounded-md shadow-md">
           <h1 className="text-2xl font-semibold mb-6">Add User To Project</h1>
-          <Formik
-            initialValues={}
-            validationSchema={validationSchema}
-            onSubmit={async (value: { userId: number , projectId: number }) => {
-              insert(value);
-            }}
-          >
+      
             <Form>
             <div className="mb-4">
                 <label
@@ -132,7 +126,6 @@ export const UserView = () => {
                 </Button>
               </div>
             </Form>
-          </Formik>
         </div>
       </div>
     </>

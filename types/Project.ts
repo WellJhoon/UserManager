@@ -1,7 +1,7 @@
 export interface Project {
   id: number;
   projectOwner: string;
-  name: string;
+  prjectName: string;
   description: string;
   users: User[];
 }

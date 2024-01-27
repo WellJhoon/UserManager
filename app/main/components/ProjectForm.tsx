@@ -37,7 +37,7 @@ export const ProjectForm = () => {
   const create = async (value: Partial<Project>) => {
     try {
       const response = await axios.post("http://localhost:3000/api/projects", {
-        name: value.name,
+        projectName: value.projectName,
         description: value.description,
         ownerId: "",
         usersSelect,
@@ -55,6 +55,7 @@ export const ProjectForm = () => {
     owner: string().required(),
   });
 
+
   const close = () => {};
   return (
     <>
@@ -63,31 +64,33 @@ export const ProjectForm = () => {
           <h1 className="text-2xl font-semibold mb-6">Add Project Form</h1>
           <Formik
             initialValues={{
-              name: "",
+              projectName: "",
               description: "",
               owner: `${ownerData.firstName} ${ownerData.lastName}`,
             }}
             validationSchema={validationSchema}
             onSubmit={async (value: Partial<Project>) => {
+              
               create(value);
+              window.location.reload();
             }}
           >
             <Form>
               <div className="mb-4">
                 <label
-                  htmlFor="name"
+                  htmlFor="projectName"
                   className="block text-gray-700 text-sm font-bold mb-2"
                 >
                   Project Name:
                 </label>
                 <Field
                   type="text"
-                  id="name"
-                  name="name"
+                  id="projectName"
+                  name="projectName"
                   className="border rounded w-full py-2 px-3"
                 />
                 <ErrorMessage
-                  name="name"
+                  name="projectName"
                   component="div"
                   className="text-red-500 text-sm"
                 />
@@ -166,7 +169,8 @@ export const ProjectForm = () => {
               </div>
 
               <div className="flex justify-end gap-x-2">
-                <button
+                <button 
+                  
                   type="submit"
                   className="bg-blue-500 text-white py-2 px-4 rounded"
                 >

@@ -50,7 +50,7 @@ const TableSection = () => {
   const getTableData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/projects/`);
-      console.log(response);
+      console.log(response.data);
       setProjects(response.data);
     } catch (error) {
       console.error(error);
@@ -110,12 +110,10 @@ const TableSection = () => {
         <Table>
           <TableHeader>
             <TableRow>
+            <TableHead className="max-w-[150px]">ID</TableHead>
               <TableHead className="max-w-[150px]">Description</TableHead>
               <TableHead className="hidden md:table-cell">
                 Project Name
-              </TableHead>
-              <TableHead className="hidden md:table-cell">
-                People Assigned a Project
               </TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -123,14 +121,10 @@ const TableSection = () => {
           <TableBody>
             {currentProjects.map((project) => (
               <TableRow key={project.id}>
+                 <TableCell>{project.id}</TableCell>
                 <TableCell>{project.description}</TableCell>
                 <TableCell>{project.name}</TableCell>
-                <TableCell>{project.users.length}</TableCell>
                 <TableCell className="flex space-x-">
-                  {/*Aqui Va */}
-                  <div className="flex space-p-3">
-                    <Button variant="outline">View Data</Button>
-                  </div>
                   <Button
                     onClick={() => handleEditClick(project)}
                     variant="outline"
