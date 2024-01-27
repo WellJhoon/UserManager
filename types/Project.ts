@@ -1,10 +1,17 @@
-// Project.ts
 export interface Project {
   id: number;
-  createdAt: string;
-  updatedAt: string;
-  owner: string;
+  projectOwner: string;
   name: string;
   description: string;
-  members: string[];
+  users: User[];
+}
+
+export interface User {
+  id: number;
+  userClerkId?: string | null;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  projectId: number;
+  role: string;
 }

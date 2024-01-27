@@ -1,16 +1,16 @@
-import { Project } from "@/types/Project";
+import { Project, User } from "@/types/Project";
 import { create } from "zustand";
 
-type EditStore = {
+type Edit = {
   isOpen: boolean;
-  project: Project | null;
-  onOpen: (project: Project) => void;
+  model: Project | User | null;
+  onOpen: (model: Project | User) => void;
   onClose: () => void;
 };
 
-export const useEdit = create<EditStore>((set) => ({
+export const useEdit = create<Edit>((set) => ({
   isOpen: false,
-  project: null,
-  onOpen: (project: Project) => set({ isOpen: true, project }),
+  model: null,
+  onOpen: (model: Project | User) => set({ isOpen: true, model }),
   onClose: () => set({ isOpen: false }),
 }));

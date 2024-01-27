@@ -17,28 +17,28 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-import { Project } from "@/types/Project";
+import { User } from "@/types/Project";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { useEdit } from "@/utils/useEdit";
+import { useRouter } from "next/navigation";
 
 const TableSection = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [deleteId, setDeleteId] = useState(null);
-  const projectsPerPage = 5; // Número de proyectos por página
-  const edit = useEdit();
 
-  const handleEditClick = (project: Project) => {
-    edit.onOpen(project);
+  const usersPerPage = 5; // Número de proyectos por página
+  const edit = useEdit();
+  const router = useRouter();
+  const handleEditClick = (user: User) => {
+    edit.onOpen(user);
   };
-  const handleDeleteClick = async (id: any) => {
-    setDeleteId(id);
+  const handleDeleteClick = async (id: number) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/projects/${id}`
+        `http://localhost:3000/api/users/${id}`
       );
       getTableData();
       console.log(response.data); // Maneja la respuesta según tus necesidades
@@ -49,9 +49,10 @@ const TableSection = () => {
 
   const getTableData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/projects/`);
-      console.log(response);
-      setProjects(response.data);
+      const response = await axios.get<User[]>(
+        "http://localhost:3000/api/users"
+      );
+      setUsers(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -62,15 +63,15 @@ const TableSection = () => {
   }, []);
 
   // Filtra y pagine los proyectos según el término de búsqueda y la página actual
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = projects
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users
     .filter((project) =>
       Object.values(project).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     )
-    .slice(indexOfFirstProject, indexOfLastProject);
+    .slice(indexOfFirstUser, indexOfLastUser);
 
   // Cambia a la página siguiente
   const nextPage = () => {
@@ -79,11 +80,11 @@ const TableSection = () => {
 
   // Calcula el número total de páginas
   const totalPages = Math.ceil(
-    projects.filter((project) =>
-      Object.values(project).some((value) =>
+    users.filter((user) =>
+      Object.values(user).some((value) =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
-    ).length / projectsPerPage
+    ).length / usersPerPage
   );
 
   // Cambia a la página anterior
@@ -99,7 +100,7 @@ const TableSection = () => {
             <div className="relative">
               <Input
                 className="w-full bg-white shadow-none appearance-none pl-8 md:w-2/3 lg:w-1/3 dark:bg-gray-950"
-                placeholder="Search projects..."
+                placeholder="Search users..."
                 type="search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,36 +111,29 @@ const TableSection = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="max-w-[150px]">Description</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Project Name
-              </TableHead>
-              <TableHead className="hidden md:table-cell">
-                People Assigned a Project
-              </TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>Id</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Creation date</TableHead>
+              <TableHead>ProjectId</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentProjects.map((project) => (
-              <TableRow key={project.id}>
-                <TableCell>{project.description}</TableCell>
-                <TableCell>{project.name}</TableCell>
-                <TableCell>{project.users.length}</TableCell>
+            {currentUsers.map((user: User) => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium">{user.id}</TableCell>
+                <TableCell className="font-medium">{user.name}</TableCell>
+                <TableCell className="font-medium">{user.createdAt}</TableCell>
+                <TableCell className="font-medium">{user.projectId}</TableCell>
                 <TableCell className="flex space-x-">
-                  {/*Aqui Va */}
-                  <div className="flex space-p-3">
-                    <Button variant="outline">View Data</Button>
-                  </div>
                   <Button
-                    onClick={() => handleEditClick(project)}
+                    onClick={() => handleEditClick(user)}
                     variant="outline"
                   >
                     Edit
                   </Button>
                   <Button
                     onClick={() => {
-                      handleDeleteClick(project?.id);
+                      handleDeleteClick(user?.id);
                     }}
                     variant="outline"
                   >
@@ -173,7 +167,6 @@ const TableSection = () => {
           </PaginationContent>
         </Pagination>
       </div>
-      {/*Termina Aqui */}
     </>
   );
 };
